@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Journal.Views.MainView"
+             xmlns:ctk="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:vm="clr-namespace:Journal.ViewModels"
+             BackgroundColor="{DynamicResource Gray100}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border BackgroundColor="{DynamicResource Primary}" Stroke="{DynamicResource Primary}" Padding="0" HorizontalOptions="FillAndExpand" Margin="15, 5, 15, 2.5">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="30,30,30,30"/>
+            </Border.StrokeShape>
+            <Grid BackgroundColor="{DynamicResource Primary}" Padding="0" HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal">
+                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="30" Padding="0" Margin="5" HorizontalOptions="StartAndExpand">
+                        <Image Source="{Binding Model.ProfilePicture}" Aspect="AspectFill" Margin="0"/>
+                    </Frame>
+                    <Label BackgroundColor="Transparent" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Text="{Binding Model.HeaderText}" TextColor="{DynamicResource White}" FontSize="Subtitle"/>
+                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="30" Padding="0" Margin="5" HorizontalOptions="EndAndExpand">
+                        <ImageButton Source="exitbutton.png" Aspect="AspectFill" Margin="0" Command="{Binding LogoutCommand}"/>
+                    </Frame>
+                </StackLayout>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="15, 2.5, 15, 15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border BackgroundColor="{DynamicResource Primary}" Stroke="{DynamicResource Primary}" Padding="0" HorizontalOptions="FillAndExpand">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="30,30,0,0"/>
+                </Border.StrokeShape>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" BackgroundColor="White" Spacing="0.5">
+                    <Button Text="Новые" FontSize="Caption" HorizontalOptions="FillAndExpand" Padding="10" Margin="0" CornerRadius="0" Command="{Binding TasksCommand}"/>
+                    <Button Grid.Column="1" Text="В процессе" FontSize="Caption" HorizontalOptions="FillAndExpand" Padding="10" Margin="0" CornerRadius="0" Command="{Binding InProgressCommand}"/>
+                    <Button Grid.Column="2" Text="Завершенные" FontSize="Caption" HorizontalOptions="FillAndExpand" Padding="10" Margin="0" CornerRadius="0" Command="{Binding FinishedCommand}"/>
+                </StackLayout>
+
+            </Border>
+
+
+            <Border Grid.Row="1" BackgroundColor="{DynamicResource White}" Stroke="{DynamicResource White}" Padding="0" HorizontalOptions="FillAndExpand">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="0,0,30,30"/>
+                </Border.StrokeShape>
+
+                <ScrollView Margin="0, 5, 0, 80">
+
+                    <CollectionView Grid.Row="1" BackgroundColor="White" ItemsSource="{Binding Model.FilteredClownTasks}" SelectedItem="{Binding Model.SelectedTask}" Margin="5, 0, 5, 0" SelectionMode="Single">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup Name="CommonStates">
+                                            <VisualState Name="Normal">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                            <VisualState Name="Selected">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                    <Setter Property="Stroke" Value="{DynamicResource Primary}"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+
+                                    <StackLayout Orientation="Vertical" VerticalOptions="Fill" HorizontalOptions="FillAndExpand" Margin="5" Spacing="5">
+
+                                        <StackLayout Orientation="Horizontal" Spacing="5" VerticalOptions="Fill" HorizontalOptions="FillAndExpand">
+
+                                            <Image Source="{Binding image}" Aspect="AspectFill" HeightRequest="60" WidthRequest="60" Margin="5" VerticalOptions="CenterAndExpand" HorizontalOptions="Start"/>
+
+                                            <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand">
+
+                                                <Label Text="{Binding name, StringFormat='Категория: {0}'}" LineBreakMode="CharacterWrap" FontAttributes="Bold" FontSize="Caption"/>
+                                                <Label Text="{Binding first_date, StringFormat='Дата создания: {0}'}" LineBreakMode="CharacterWrap" FontSize="Micro"/>
+                                                <Label Text="{Binding second_date, StringFormat='Дата завершения: {0}', TargetNullValue='Дата завершения: В процессе'}" LineBreakMode="CharacterWrap" FontSize="Micro"/>
+                                                <Label Text="{Binding teacher, StringFormat='Преподаватель: {0}'}" LineBreakMode="CharacterWrap" FontSize="Caption"/>
+                                                <Label Text="{Binding worker, StringFormat='Техник: {0}', TargetNullValue='Техник: Не определен'}" LineBreakMode="CharacterWrap" FontSize="Caption"/>
+
+                                            </StackLayout>
+
+                                        </StackLayout>
+
+                                        <Label Text="{Binding text, StringFormat='Описание: {0}', TargetNullValue='Описание: Отсутствует'}" LineBreakMode="CharacterWrap" FontSize="Caption"/>
+
+                                    </StackLayout>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </ScrollView>
+
+            </Border>
+
+            <Grid Grid.Row="1" Margin="20, 0, 20, 20" VerticalOptions="End" HeightRequest="80">
+                <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" Spacing="20">
+                    <Button Text="{Binding Model.Button1Text}" Command="{Binding Button1Command}" FontSize="Subtitle" CornerRadius="30" HeightRequest="40" HorizontalOptions="FillAndExpand"/>
+                    <Button Text="{Binding Model.Button2Text}" Command="{Binding Button2Command}" IsVisible="{Binding Model.IsVisible}" FontSize="Subtitle" CornerRadius="30" HeightRequest="40" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
